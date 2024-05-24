@@ -2,7 +2,7 @@
   <v-app>
     <v-main>
       <v-container>
-        <router-view></router-view>
+        <v-btn color="primary" @click="$router.push('/about')">Go to About</v-btn>
       </v-container>
     </v-main>
   </v-app>
