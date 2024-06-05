@@ -1,9 +1,9 @@
 import { createMemoryHistory, createRouter } from 'vue-router'
 
 import HomeView from '../components/Home.vue'
-import Game1 from '../components/Game1.vue'
-import Game2 from '../components/Game2.vue'
-import Game3 from '../components/Game3.vue'
+import Game1 from '../components/Solitaire.vue'
+import Game2 from '../components/Memory.vue'
+import Game3 from '../components/GuessTheSound.vue'
 
 const routes = [
   { path: '/', name:"Home", component: HomeView },
