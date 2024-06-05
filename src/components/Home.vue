@@ -25,6 +25,7 @@ export default {
         { id: 1, name: "Spiel 1", route: "/game1" },
         { id: 2, name: "Spiel 2", route: "/game2" },
         { id: 3, name: "Spiel 3", route: "/game3" },
+        { id: 4, name: "Spiel 4", route: "/game4"}
       ],
     };
   },
