@@ -10,7 +10,7 @@
         </div>
         <div v-if="result !== null">
             <img :src="result" height="250"/>
-            <p v-if="last !== null">The last Flag was {{ last }}</p>
+            <p v-if="last !== null">{{ last }}</p>
         </div>
     </v-card>
 </template>
@@ -64,7 +64,7 @@ export default {
                 { name: "Ungarn", id: 41, flag: "https://flagcdn.com/hu.svg" },
                 { name: "Vatikanstadt", id: 42, flag: "https://flagcdn.com/va.svg" },
                 { name: "Vereinigtes Königreich", id: 43, flag: "https://flagcdn.com/gb.svg" },
-                { name: "Weißrussland", id: 44, flag: "https://flagcdn.com/by.svg" }
+                { name: "Belarus", id: 44, flag: "https://flagcdn.com/by.svg" }
             ],
             options: [],
             correctCountry: null,
@@ -87,10 +87,10 @@ export default {
         checkAnswer(country) {
             if (country === this.correctCountry) {
                 this.result = 'https://upload.wikimedia.org/wikipedia/commons/0/05/Check_Mark_CSS_Green.svg';
-                this.last = null;
+                this.last = "Korrekt! Die letzte Flagge war " + this.correctCountry.name;
             } else {
                 this.result = 'https://upload.wikimedia.org/wikipedia/commons/9/92/RedX_Transparent.svg';
-                this.last = this.correctCountry.name;
+                this.last = "Falsch! Die letzte Flagge war " + this.correctCountry.name;
             }
             this.generateQuiz();
         }
