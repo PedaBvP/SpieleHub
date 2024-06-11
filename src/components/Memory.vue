@@ -46,6 +46,22 @@
 </template>
 
 <script>
+import bird from '../assets/images/bird.jpg';
+import bug from '../assets/images/bug.jpg';
+import cat from '../assets/images/cat.jpg';
+import cow from '../assets/images/cow.jpg';
+import deer from '../assets/images/deer.jpg';
+import dog from '../assets/images/dog.jpg'; 
+import eagle from '../assets/images/eagle.jpg';
+import flamingo from '../assets/images/flamingo.jpg';
+import fox from '../assets/images/fox.jpg';
+import giraffe from '../assets/images/giraffe.jpg';
+import meerkat from '../assets/images/meerkat.jpg';
+import monkey from '../assets/images/monkey.jpg';
+import owl from '../assets/images/owl.jpg';
+import peacock from '../assets/images/peacock.jpg';
+import seagull from '../assets/images/seagull.jpg';
+
 export default {
   name: "Memory",
   data() {
@@ -65,36 +81,21 @@ export default {
   methods: {
     initializeCards() {
       let contents = [
-        "https://picsum.photos/id/239/200/200",
-        "https://picsum.photos/id/239/200/200",
-        "https://picsum.photos/id/238/200/200",
-        "https://picsum.photos/id/238/200/200",
-        "https://picsum.photos/id/237/200/200",
-        "https://picsum.photos/id/237/200/200",
-        "https://picsum.photos/id/236/200/200",
-        "https://picsum.photos/id/236/200/200",
-        "https://picsum.photos/id/235/200/200",
-        "https://picsum.photos/id/235/200/200",
-        "https://picsum.photos/id/234/200/200",
-        "https://picsum.photos/id/234/200/200",
-        "https://picsum.photos/id/233/200/200",
-        "https://picsum.photos/id/233/200/200",
-        "https://picsum.photos/id/232/200/200",
-        "https://picsum.photos/id/232/200/200",
-        "https://picsum.photos/id/231/200/200",
-        "https://picsum.photos/id/231/200/200",
-        "https://picsum.photos/id/230/200/200",
-        "https://picsum.photos/id/230/200/200",
-        "https://picsum.photos/id/229/200/200",
-        "https://picsum.photos/id/229/200/200",
-        "https://picsum.photos/id/228/200/200",
-        "https://picsum.photos/id/228/200/200",
-        "https://picsum.photos/id/227/200/200",
-        "https://picsum.photos/id/227/200/200",
-        "https://picsum.photos/id/225/200/200",
-        "https://picsum.photos/id/225/200/200",
-        "https://picsum.photos/id/223/200/200",
-        "https://picsum.photos/id/223/200/200",
+        bird, bird,
+        bug, bug,
+        cat, cat,
+        cow, cow,
+        deer, deer,
+        dog, dog,
+        eagle, eagle,
+        flamingo, flamingo,
+        fox, fox,
+        giraffe, giraffe,
+        meerkat, meerkat,
+        monkey, monkey,
+        owl, owl,
+        peacock, peacock,
+        seagull, seagull
       ];
       contents = this.shuffle(contents);
       return contents.map((content) => ({
