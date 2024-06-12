@@ -1,12 +1,12 @@
 <template>
   <v-container class="custom-container">
-    <audio ref="audio" :src="audioFile" @timeupdate="updateProgress"></audio>
+    <audio ref="audio" :src="currentAudio.url" @timeupdate="updateProgress"></audio>
 
     <h1 class="text-uppercase">
       <v-icon>mdi-volume-medium</v-icon>
       <span> Guess the Audio</span>
     </h1>
-
+    
     <span>{{ currentTime }}</span>
     <div class="soundbar">
       <v-slider :disabled="enable <= 6" v-model="progress" @click="seekAudio" ></v-slider>
@@ -60,18 +60,20 @@
       </v-form>
     </v-sheet>
 
-    <v-btn elevation="24" class="mt-8" size="x-large" block variant="outlined" @click="playRandomAudio">Skip</v-btn>
+    <v-btn v-if="submitted && inputText.toLowerCase().replace(' ', '') === currentAudio.name.toLowerCase().replace(' ', '')"
+     elevation="24" class="mt-8" size="x-large" block variant="outlined" @click="playRandomAudio">Next</v-btn>
+    <v-btn v-else elevation="24" class="mt-8" size="x-large" block variant="outlined" @click="playRandomAudio">Skip</v-btn>
 
     <div
-      v-if="submitted && inputText.toLowerCase().replace(' ', '') === audioFile.replace('/audio/', '').replace('.mp3', '').toLowerCase().replace(' ', '')">
+      v-if="submitted && inputText.toLowerCase().replace(' ', '') === currentAudio.name.toLowerCase().replace(' ', '')">
       <img class="mt-8" src="https://upload.wikimedia.org/wikipedia/commons/0/05/Check_Mark_CSS_Green.svg"
         alt="Valid image" style="width: 70px; height: 70px;">
-      <p>Songname: {{ audioFile.replace('/audio/', '').replace('.mp3', '') }}</p>
+      <p>Name: {{ currentAudio.name }}</p>
     </div>
     <div v-else-if="submitted || remainingGuesses <= 0">
       <img class="mt-8" src="https://upload.wikimedia.org/wikipedia/commons/9/92/RedX_Transparent.svg"
         alt="Invalid image" style="width: 70px; height: 70px;">
-      <p v-if="remainingGuesses <= 0">Songname: {{ audioFile.replace('/audio/', '').replace('.mp3', '') }}</p>
+      <p v-if="remainingGuesses <= 0">Name: {{ currentAudio.name }}</p>
     </div>
 
 
@@ -90,8 +92,24 @@
 export default {
   data() {
     return {
-      audioFiles: ['/audio/in the end.mp3', '/audio/numb.mp3', '/audio/crawling.mp3'], // Liste aller Audiodateien
-      audioFile: '/audio/in the end.mp3',
+      audioFiles: [
+        {name: "Elefant", id: 0, url:"http://soundbible.com/grab.php?id=157&type=mp3"},
+        {name: "Katze", id: 1, url:"http://soundbible.com/grab.php?id=1954&type=mp3"},
+        {name: "Hund", id: 2, url: "http://soundbible.com/grab.php?id=2215&type=mp3"},
+        {name: "Eule", id: 3, url: "http://soundbible.com/grab.php?id=1331&type=mp3"},
+        {name: "Vogel", id: 4, url: "http://soundbible.com/grab.php?id=1213&type=mp3"},
+        {name: "Alpaca", id: 5, url: "http://soundbible.com/grab.php?id=1735&type=mp3"},
+        {name: "Kuh", id: 6, url: "http://soundbible.com/grab.php?id=1568&type=mp3"},
+        {name: "Hahn", id: 7, url: "http://soundbible.com/grab.php?id=1134&type=mp3"},
+        {name: "Frosch", id: 8, url: "http://soundbible.com/grab.php?id=2033&type=mp3"},
+        {name: "Hirsch", id: 9, url: "http://soundbible.com/grab.php?id=2073&type=mp3"},
+        {name: "Drache", id: 10, url: "http://soundbible.com/grab.php?id=543&type=mp3"},
+        {name: "Pferd", id: 11, url: "http://soundbible.com/grab.php?id=429&type=mp3"},
+        {name: "Löwe", id: 12, url: "http://soundbible.com/grab.php?id=1272&type=mp3"},
+        {name: "Ente", id: 13, url: "http://soundbible.com/grab.php?id=1378&type=mp3"},
+        {name: "Gans", id: 14, url: "http://soundbible.com/grab.php?id=1209&type=mp3"},
+      ], 
+      currentAudio: {},
       progress: 0,
       isPlaying: false,
       currentTime: '00:00',
@@ -101,6 +119,9 @@ export default {
       submitted: false,
       enable: 1
     }
+  },
+  created() {
+      this.generateGame();
   },
   watch: {
     volume(newVolume) {
@@ -112,6 +133,10 @@ export default {
 
   },
   methods: {
+    generateGame(){
+      const shuffled = this.audioFiles.sort(() => 0.5 - Math.random());
+      this.currentAudio = shuffled[0];
+    },
     playButton(){
       if(this.enable <= 6){
         this.playForSeconds(this.enable);
@@ -144,6 +169,7 @@ export default {
       this.$refs.audio.volume = this.volume / 100
     },
     playForSeconds(n) {
+      if(n <= this.$refs.audio.duration){ 
       this.enable = Math.max(this.enable, n + 1);
       this.isPlaying = true;
       this.$refs.audio.currentTime = 0
@@ -154,11 +180,27 @@ export default {
         this.currentTime = '00:00';
         this.$refs.audio.pause()
       }, (n + 1) * 1000)
+    }else{
+      this.enable = n;
+      this.isPlaying = true;
+      this.$refs.audio.currentTime = 0;
+      this.$refs.audio.play()
+      setTimeout(() => {
+        this.isPlaying = false;
+        this.progress = 0;
+        this.currentTime = '00:00';
+        this.$refs.audio.pause()
+      }, (n + 1) * 1000)
+    }
     },
     checkInput() {
       this.submitted = true;
-      if (this.inputText.toLowerCase().replace(' ', '') !== this.audioFile.replace('/audio/', '').replace('.mp3', '').toLowerCase().replace(' ', '')) {
-        this.remainingGuesses -= 1;
+      if (this.inputText.toLowerCase().replace(' ', '') !== this.currentAudio.name.toLowerCase().replace(' ', '')) {
+        if(this.remainingGuesses == 0){
+          this.remainingGuesses = 0;
+        }else{
+          this.remainingGuesses -= 1;
+        }
       }
     },
     playRandomAudio() {
@@ -167,7 +209,7 @@ export default {
         randomIndex = Math.floor(Math.random() * this.audioFiles.length)
       } while (randomIndex === this.lastPlayedIndex)
       this.lastPlayedIndex = randomIndex
-      this.audioFile = this.audioFiles[randomIndex]
+      this.currentAudio = this.audioFiles[randomIndex]
       this.$refs.audio.src = this.audioFile
 
       this.submitted = false;
