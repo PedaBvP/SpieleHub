@@ -70,7 +70,8 @@ export default {
             correctCountry: null,
             flagUrl: '',
             result: null,
-            last: null
+            last: null,
+            lastCountry: null
         };
     },
     created() {
@@ -82,6 +83,9 @@ export default {
             const shuffled = this.countries.sort(() => 0.5 - Math.random());
             this.options = shuffled.slice(0, 4);
             this.correctCountry = this.options[Math.floor(Math.random() * 4)];
+            if(this.lastCountry === this.correctCountry){
+                this.generateQuiz();
+            }
             this.flagUrl = this.correctCountry.flag;
         },
         checkAnswer(country) {
@@ -92,6 +96,7 @@ export default {
                 this.result = 'https://upload.wikimedia.org/wikipedia/commons/9/92/RedX_Transparent.svg';
                 this.last = "Falsch! Die letzte Flagge war " + this.correctCountry.name;
             }
+            this.lastCountry = this.correctCountry;
             this.generateQuiz();
         }
     }

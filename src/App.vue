@@ -2,7 +2,7 @@
 <template>
   <v-layout>
     <navbar></navbar>
-    <v-main>
+    <v-main style="background-color: white">
         
         <router-view />
     </v-main>

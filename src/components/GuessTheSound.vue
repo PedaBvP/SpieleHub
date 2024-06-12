@@ -83,6 +83,7 @@
 
 <style scoped>
 .custom-container {
+  background-color: white;
   max-width: 800px;
 }
 </style>
