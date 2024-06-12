@@ -22,10 +22,10 @@ export default {
   data() {
     return {
       games: [
-        { id: 1, name: "Spiel 1", route: "/game1" },
-        { id: 2, name: "Spiel 2", route: "/game2" },
-        { id: 3, name: "Spiel 3", route: "/game3" },
-        { id: 4, name: "Spiel 4", route: "/game4"}
+      { id: 1, name: "Solitaire", route: "/home/solitaire" },
+        { id: 2, name: "Memory", route: "/home/memory" },
+        { id: 3, name: "Guess the Sound", route: "/home/guessthesound" },
+        { id: 4, name: "Guess the Flag", route: "/home/guesstheflag" }
       ],
     };
   },
