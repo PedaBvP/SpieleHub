@@ -53,6 +53,10 @@
       <p>Verbleibende Versuche {{ remainingGuesses }}</p>
     </div>
 
+    <div class="mt-2">
+      <p>Punkte: {{ points }}</p>
+    </div>
+
     <v-sheet class="mx-auto mt-5" width="300">
       <v-form @submit.prevent>
         <v-text-field v-model="inputText" label="Tiername..."></v-text-field>
@@ -118,7 +122,9 @@ export default {
       remainingGuesses: 5,
       inputText: null,
       submitted: false,
-      enable: 1
+      enable: 1,
+      points: 0,
+      pointsEnabled: true
     }
   },
   created() {
@@ -202,6 +208,11 @@ export default {
         }else{
           this.remainingGuesses -= 1;
         }
+      }else{
+        if(this.pointsEnabled){
+          this.points = this.remainingGuesses + this.points;
+          this.pointsEnabled = false;
+        }
       }
     },
     playRandomAudio() {
@@ -213,6 +224,7 @@ export default {
       this.currentAudio = this.audioFiles[randomIndex]
       this.$refs.audio.src = this.audioFile
 
+      this.pointsEnabled = true;
       this.submitted = false;
       this.currentTime = '00:00';
       this.progress = 0;
