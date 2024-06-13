@@ -50,19 +50,23 @@
     </v-row>
 
     <div class="mt-8">
-      <p>Remaining Guesses {{ remainingGuesses }}</p>
+      <p>Verbleibende Versuche {{ remainingGuesses }}</p>
+    </div>
+
+    <div class="mt-2">
+      <p>Punkte: {{ points }}</p>
     </div>
 
     <v-sheet class="mx-auto mt-5" width="300">
       <v-form @submit.prevent>
-        <v-text-field v-model="inputText" label="Type in song name"></v-text-field>
-        <v-btn class="mt-2" type="submit" block @click="checkInput">Submit</v-btn>
+        <v-text-field v-model="inputText" label="Tiername..."></v-text-field>
+        <v-btn class="mt-2" type="submit" block @click="checkInput">Bestätigen</v-btn>
       </v-form>
     </v-sheet>
 
     <v-btn v-if="submitted && inputText.toLowerCase().replace(' ', '') === currentAudio.name.toLowerCase().replace(' ', '')"
-     elevation="24" class="mt-8" size="x-large" block variant="outlined" @click="playRandomAudio">Next</v-btn>
-    <v-btn v-else elevation="24" class="mt-8" size="x-large" block variant="outlined" @click="playRandomAudio">Skip</v-btn>
+     elevation="24" class="mt-8" size="x-large" block variant="outlined" @click="playRandomAudio">Nächstes Tier</v-btn>
+    <v-btn v-else elevation="24" class="mt-8" size="x-large" block variant="outlined" @click="playRandomAudio">Überspringen</v-btn>
 
     <div
       v-if="submitted && inputText.toLowerCase().replace(' ', '') === currentAudio.name.toLowerCase().replace(' ', '')">
@@ -83,7 +87,7 @@
 
 <style scoped>
 .custom-container {
-  background-color: white;
+  background-color:white;
   max-width: 800px;
 }
 </style>
@@ -99,7 +103,7 @@ export default {
         {name: "Hund", id: 2, url: "http://soundbible.com/grab.php?id=2215&type=mp3"},
         {name: "Eule", id: 3, url: "http://soundbible.com/grab.php?id=1331&type=mp3"},
         {name: "Vogel", id: 4, url: "http://soundbible.com/grab.php?id=1213&type=mp3"},
-        {name: "Alpaca", id: 5, url: "http://soundbible.com/grab.php?id=1735&type=mp3"},
+        {name: "Alpaka", id: 5, url: "http://soundbible.com/grab.php?id=1735&type=mp3"},
         {name: "Kuh", id: 6, url: "http://soundbible.com/grab.php?id=1568&type=mp3"},
         {name: "Hahn", id: 7, url: "http://soundbible.com/grab.php?id=1134&type=mp3"},
         {name: "Frosch", id: 8, url: "http://soundbible.com/grab.php?id=2033&type=mp3"},
@@ -118,7 +122,9 @@ export default {
       remainingGuesses: 5,
       inputText: null,
       submitted: false,
-      enable: 1
+      enable: 1,
+      points: 0,
+      pointsEnabled: true
     }
   },
   created() {
@@ -202,6 +208,11 @@ export default {
         }else{
           this.remainingGuesses -= 1;
         }
+      }else{
+        if(this.pointsEnabled){
+          this.points = this.remainingGuesses + this.points;
+          this.pointsEnabled = false;
+        }
       }
     },
     playRandomAudio() {
@@ -213,6 +224,7 @@ export default {
       this.currentAudio = this.audioFiles[randomIndex]
       this.$refs.audio.src = this.audioFile
 
+      this.pointsEnabled = true;
       this.submitted = false;
       this.currentTime = '00:00';
       this.progress = 0;
