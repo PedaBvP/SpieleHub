@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container v-if="!won()" >
     <h1>Solitaire</h1>
     <v-row>
       <v-col v-for="(stack, stackIndex) in stacks[2]" 
@@ -19,7 +19,8 @@
           </v-card-title>
         </v-card>
       </v-col>
-      <VSpacer></VSpacer>
+      
+      <v-spacer> <v-row style="padding-top: 70px; padding-left: 40px;"><v-btn v-if="completeAble()" @click="autoComplete()" class="text-center" > Complete Game</v-btn></v-row></v-spacer>
       <v-col v-for="(stack, stackIndex) in stacks[0]" 
       :key="stackIndex" 
       cols="1.1" 
@@ -59,6 +60,18 @@
       </v-col>
     </v-row>
   </v-container>
+
+  <!-- Gratulationsfenster -->
+  <v-dialog v-model="winDialog" max-width="500px">
+      <v-card>
+        <v-card-title class="headline">Herzlichen Glückwunsch!</v-card-title>
+        <v-card-text>Sie haben das Spiel gewonnen!</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="grey darken-1" text @click="restart()">Erneut spielen</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 </template>
 
 <script>
@@ -69,7 +82,7 @@ export default defineComponent({
     return {
       stacks: [
       [
-        [{ value: 0, color: 'red', suit: 'mdi-heart', seeable: false , default: true}],
+        [{ value: 0, color: 'red', suit: 'mdi-heart', seeable: true , default: true}],
         [{ value: 0, color: 'red', suit: 'mdi-cards-diamond', seeable: true, default: true}],
         [{ value: 0, color: 'black', suit: 'mdi-cards-spade', seeable: true, default: true}],
         [{ value: 0, color: 'black', suit: 'mdi-cards-club', seeable: true, default: true}],
@@ -146,6 +159,7 @@ export default defineComponent({
       selectedCardStack: null,
       selectedStack: null,
       selectedCardIndex: null,
+      winDialog: false,
     };
   },
   created() {
@@ -161,8 +175,82 @@ export default defineComponent({
         this.stacks[1][i][i+1].seeable = true;
       }
 
-      this.stacks[2][0].push(...shuffled);      
+      this.stacks[2][0].push(...shuffled.splice(0,24));      
     },
+    won(){ 
+      if(this.stacks[0][0].length === 14 && this.stacks[0][1].length === 14 && this.stacks[0][2].length === 14 && this.stacks[0][3].length === 14){
+        this.winDialog = true;
+        return true;
+      }
+      return false;
+    },
+    instant(){
+
+      this.stacks[2][0] = this.stacks[2][0].splice(0,1);
+      this.stacks[2][1] = this.stacks[2][1].splice(0,1);
+      for(let i = 0; i < 7; i++){
+        this.stacks[1][i] = this.stacks[1][i].splice(0,1);
+      }
+
+
+      for(let i = 0; i < 4; i++){
+        for(let j = 0; j < 13; j++){
+          this.stacks[0][i].push({});
+        }
+      }
+
+    },
+    restart(){
+      this.cards.push(...this.stacks[0][0].splice(1,14));
+      this.cards.push(...this.stacks[0][1].splice(1,14));
+      this.cards.push(...this.stacks[0][2].splice(1,14));
+      this.cards.push(...this.stacks[0][3].splice(1,14));
+
+      
+      for(let i = 0; i < this.cards.length; i++){
+        this.cards[i].seeable = false;
+      }
+
+      this.generateSolitaire();
+      this.winDialog = false;
+    },
+    completeAble(){
+      let complete = true;
+      for(let i = 0; i < this.stacks[1].length; i++){
+        for(let j = 1; j < this.stacks[1][i].length; j++){
+          complete = complete && this.stacks[1][i][j].seeable;
+        }
+      }
+      if(!this.won() && this.stacks[2][0].length === 1 && this.stacks[2][1].length === 1 && complete){
+        return true;
+      }
+      return false;
+    },
+    async autoComplete(){
+      while(!this.won()){
+        for(let i = 0; i < this.stacks[1].length; i++){
+        let j = this.stacks[1][i].length - 1
+        this.selectedCard = this.stacks[1][i][j];
+        this.selectedCardIndex = j;
+        this.selectedCardStack = i;
+        this.selectedStack = 1;
+        for(let k = 0; k < this.stacks[0].length; k++){
+          if(this.checkMove(0,k)){
+            this.moveCard(0,k);
+            await this.delay(200);
+          }
+        }
+      }
+
+      }
+      this.selectedCard = null;
+      this.selectedCardStack = null;
+      this.selectedStack = null;
+      this.selectedCardIndex = null;
+    },
+  delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  },
     selectOverflowCard(cardStackIndex, cardIndex){
       if(cardStackIndex === 0){
         if(cardIndex !== 0){
