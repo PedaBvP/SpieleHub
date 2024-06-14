@@ -1,6 +1,8 @@
 <template>
   <v-container v-if="!won()" >
     <h1>Solitaire</h1>
+    
+      <!-- Overflow stapel -->
     <v-row>
       <v-col v-for="(stack, stackIndex) in stacks[2]" 
       :key="stackIndex" 
@@ -20,7 +22,7 @@
           </v-card-title>
         </v-card>
       </v-col>
-      
+      <!-- Ablagestapel -->
       <v-spacer> <v-row style="padding-top: 70px; padding-left: 40px;"><v-btn v-if="completeAble()" @click="autoComplete()" class="text-center" > Complete Game</v-btn></v-row></v-spacer>
       <v-col v-for="(stack, stackIndex) in stacks[0]" 
       :key="stackIndex" 
@@ -82,6 +84,7 @@ import { defineComponent } from 'vue';
 export default defineComponent({
   data() {
     return {
+      //stacks[0] = Ablagestapel, stacks[1] = Spielfeld, stacks[2] = Overflowstapel
       stacks: [
       [
         [{ value: 0, color: 'red', suit: 'mdi-heart', seeable: true , default: true}],
@@ -102,6 +105,7 @@ export default defineComponent({
       [{ default: true}],
       ],
     ],
+    // Spielkarten
       cards:[
       { value: 'A', color: 'red', suit: 'mdi-heart', seeable: false,  default: false},
       { value: 'K', color: 'red', suit: 'mdi-heart', seeable: false,  default: false},
@@ -164,21 +168,25 @@ export default defineComponent({
       winDialog: false,
     };
   },
+  // Wird aufgerufen, wenn die Seite das erste mal geladen wird
   created() {
         this.generateSolitaire();
     },
   methods: {
+    // Weißt die Karten zufällig den Stapeln zu 
     generateSolitaire(){
       const shuffled = this.cards.sort(() => 0.5 - Math.random());
       
-      // Karten auf die Stapel verteilen
+      // Karten auf die Spielfeld aufteilen
       for (let i = 0; i < 7; i++) {
         this.stacks[1][i].push(...shuffled.splice(0, i + 1));
         this.stacks[1][i][i+1].seeable = true;
       }
 
+      // Rest auf overflowstapel ablegen
       this.stacks[2][0].push(...shuffled.splice(0,24));      
     },
+    // Überprüfung, ob man gewonnen hat
     won(){ 
       if(this.stacks[0][0].length === 14 && this.stacks[0][1].length === 14 && this.stacks[0][2].length === 14 && this.stacks[0][3].length === 14){
         this.winDialog = true;
@@ -186,23 +194,9 @@ export default defineComponent({
       }
       return false;
     },
-    instant(){
-
-      this.stacks[2][0] = this.stacks[2][0].splice(0,1);
-      this.stacks[2][1] = this.stacks[2][1].splice(0,1);
-      for(let i = 0; i < 7; i++){
-        this.stacks[1][i] = this.stacks[1][i].splice(0,1);
-      }
-
-
-      for(let i = 0; i < 4; i++){
-        for(let j = 0; j < 13; j++){
-          this.stacks[0][i].push({});
-        }
-      }
-
-    },
+    // Möchte man ein neues Spiel starten
     restart(){
+      //Karten werden vom Ablagestapel in das cards Array wieder gespeichert
       this.cards.push(...this.stacks[0][0].splice(1,14));
       this.cards.push(...this.stacks[0][1].splice(1,14));
       this.cards.push(...this.stacks[0][2].splice(1,14));
@@ -213,9 +207,11 @@ export default defineComponent({
         this.cards[i].seeable = false;
       }
 
+      // Spielkarten werden wieder erneut ausgeteilt
       this.generateSolitaire();
       this.winDialog = false;
     },
+    // Überprüft, ob das Spiel bereits gewonnen ist, und nurmehr die Karten auf den Ablagestapel platziert werden müssen
     completeAble(){
       let complete = true;
       for(let i = 0; i < this.stacks[1].length; i++){
@@ -228,6 +224,8 @@ export default defineComponent({
       }
       return false;
     },
+    // Legt alle Karten, welche auf dem Spielfeld sind automatisch auf den Ablagestapel
+    // async, damit es nicht instant passiert und etwas visuelles für das Auge dabei ist
     async autoComplete(){
       while(!this.won()){
         for(let i = 0; i < this.stacks[1].length; i++){
@@ -250,12 +248,15 @@ export default defineComponent({
       this.selectedStack = null;
       this.selectedCardIndex = null;
     },
+    // delay methode
   delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
   },
+  // Deckt eine Karte vom Overflowstapel auf oder wählt die Karte aus, um diese zu verschieben
     selectOverflowCard(cardStackIndex, cardIndex){
       if(cardStackIndex === 0){
         if(cardIndex !== 0){
+          //wähle die oberste Karte aus und lege sie auf den anderen Stapel in Overflowstapel
             this.selectedCard = this.stacks[2][0][cardIndex];
             this.selectedStack = 2;
             this.selectedCardStack = cardStackIndex;
@@ -281,6 +282,7 @@ export default defineComponent({
       }
 
     },
+    //wählt eine Karte aus, um diese anschließend zu verschieben
     selectCard(stackIndex, cardStackIndex, cardIndex) {
       if (this.selectedCard === null) {
         // Speichere die erste ausgewählte Karte und den Stapel
@@ -293,8 +295,9 @@ export default defineComponent({
         }
 
       } else {
-        // Verschiebe die Karte auf den neuen Stapel
+        // Prüfe, ob es erlaubt ist, dass die Karte übertragen wird
         if(this.checkMove(stackIndex,cardStackIndex)){
+          // Verschiebe die Karte auf den neuen Stapel
           this.moveCard(stackIndex, cardStackIndex);
           // Zurücksetzen der Auswahl
         }
@@ -304,6 +307,10 @@ export default defineComponent({
         this.selectedCardStack = null;
       }
     },
+    // Es wird überprüft, ob es erlaubt ist die Karte zu übertragen.
+    // Ist es der Overflowstapel, ist es nicht erlaubt
+    // Ist es ein stapel vom Spielfeld, muss die Zielkarte nicht der gleichen Farbe entsprechen und eins höher sein
+    // Ist es ein stapel vom Ablagestapel, muss die Zielkarte der gleichen Art (Herz, Karo, Pik, Kreuz) entsprechen
     checkMove(toStackIndex, toCardStackIndex){
       if(toStackIndex !== 2){
         
@@ -330,6 +337,7 @@ export default defineComponent({
 
       return false;
     },
+    // die Charakter der values werden in Zahlen umgerechnet
     valueToNumber(cardValue){
       let value = null;
 
@@ -353,6 +361,7 @@ export default defineComponent({
 
       return value;
     },
+    // Eine Karte wird vom ersten Stapel auf den zweiten Stapel übertragen
     moveCard(toStackIndex, toCardStackIndex) {
       // Entferne die Karte aus dem ursprünglichen Stapel
       let length = this.stacks[this.selectedStack][this.selectedCardStack].length;
@@ -364,9 +373,11 @@ export default defineComponent({
       // Füge die Karte zum neuen Stapel hinzu
       this.stacks[toStackIndex][toCardStackIndex].push(...tempStack);
     },
+    // Überprüft, ob eine Karte ausgewählt ist, wodurch diese eine Makierung bekommt
     isSelected(stackIndex, cardStackIndex, cardIndex) {
       return this.selectedStack === stackIndex && this.selectedCardStack === cardStackIndex && this.selectedCardIndex <= cardIndex;
     },
+    // Sorgt für das überlappen der Karten
     cardStyle(cardIndex) {
       if(cardIndex !== 0){
         return {

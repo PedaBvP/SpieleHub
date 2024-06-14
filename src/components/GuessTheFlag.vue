@@ -19,6 +19,7 @@
 export default {
     data() {
         return {
+            // Liste der Europäischen Länder mit Flaggenlink
             countries: [
                 { name: "Albanien", id: 0, flag: "https://flagcdn.com/al.svg" },
                 { name: "Andorra", id: 1, flag: "https://flagcdn.com/ad.svg" },
@@ -74,20 +75,26 @@ export default {
             lastCountry: null
         };
     },
+    // Wird beim erstmaligen aufrufen der Seite ausgeführt
     created() {
         this.generateQuiz();
     },
     methods: {
+        // erzeugt das Quiz
         generateQuiz() {
             this.options = [];
+            // Die Flaggen werden zufällig sortiert
             const shuffled = this.countries.sort(() => 0.5 - Math.random());
+            // Die ersten 4 werden ausgewählt
             this.options = shuffled.slice(0, 4);
+            // Einer dieser 4 Flaggen wird als die Richtige Flagge deklariert
             this.correctCountry = this.options[Math.floor(Math.random() * 4)];
             if(this.lastCountry === this.correctCountry){
                 this.generateQuiz();
             }
             this.flagUrl = this.correctCountry.flag;
         },
+        // überprüft, ob die gegebene Antwort richtig ist
         checkAnswer(country) {
             if (country === this.correctCountry) {
                 this.result = 'https://upload.wikimedia.org/wikipedia/commons/0/05/Check_Mark_CSS_Green.svg';
