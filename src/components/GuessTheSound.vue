@@ -4,7 +4,7 @@
 
     <h1 class="text-uppercase">
       <v-icon>mdi-volume-medium</v-icon>
-      <span> Guess the Audio</span>
+      <span> Guess the Sound</span>
     </h1>
     
     <span>{{ currentTime }}</span>

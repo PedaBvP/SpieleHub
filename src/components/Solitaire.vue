@@ -11,9 +11,10 @@
         class="card text-center" 
         :class="{ selected: isSelected(2, stackIndex, cardIndex) }" 
         @click="selectOverflowCard(stackIndex, cardIndex)">
-        <v-img v-if="stackIndex === 0 && cardIndex !== 0"
-            src="public\pictures\Rückseite.png"
-          ></v-img>
+        <img v-if="stackIndex === 0 && cardIndex !== 0"
+            :width="100"
+            src="../assets/images/rueckseite.jpg"
+          />
           <v-card-title class="text-center" v-else>
             <v-icon :color="card.color" :icon="card.suit"></v-icon> {{ card.value }}
           </v-card-title>
@@ -50,9 +51,10 @@
         :style="cardStyle(cardIndex)"
         :class="{ selected: isSelected(1, stackIndex, cardIndex) }" 
         @click="selectCard(1, stackIndex, cardIndex)">
-        <v-img v-if="!card.seeable"
-            src="public\pictures\Rückseite.png"
-          ></v-img>
+        <img v-if="!card.seeable"
+            :width="100"
+            src="../assets/images/rueckseite.jpg"
+          />
           <v-card-title v-else-if="!card.default">
             {{ card.value }} <v-icon :color="card.color" :icon="card.suit"></v-icon> 
           </v-card-title>
