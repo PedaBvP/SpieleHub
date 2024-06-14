@@ -1,10 +1,11 @@
 <template>
   <v-container class="custom-container">
+    <!-- audio initiliazing -->
     <audio ref="audio" :src="currentAudio.url" @timeupdate="updateProgress"></audio>
 
     <h1 class="text-uppercase">
       <v-icon>mdi-volume-medium</v-icon>
-      <span> Guess the Sound</span>
+      <span> Guess the Audio</span>
     </h1>
     
     <span>{{ currentTime }}</span>
@@ -140,10 +141,12 @@ export default {
 
   },
   methods: {
+    /* start the game with a random audio */
     generateGame(){
       const shuffled = this.audioFiles.sort(() => 0.5 - Math.random());
       this.currentAudio = shuffled[0];
     },
+    /* play and pause audio */
     playButton(){
       if(this.enable <= 6){
         this.playForSeconds(this.enable);
@@ -151,6 +154,7 @@ export default {
         this.togglePlayPause();
       }
     },
+    /* toggles play and pause */
     togglePlayPause() {
       if (this.isPlaying) {
         this.$refs.audio.pause()
@@ -160,21 +164,26 @@ export default {
         this.isPlaying = true
       }
     },
+    /* tracks the progress of the audio */
     updateProgress() {
       this.progress = (this.$refs.audio.currentTime / this.$refs.audio.duration) * 100
       this.currentTime = this.formatTime(this.$refs.audio.currentTime)
     },
+    /* formats the time of the played audio */
     formatTime(time) {
       let minutes = Math.floor(time / 60)
       let seconds = Math.floor(time % 60)
       return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
     },
+    /* enables clicking in the soundbar */
     seekAudio() {
       this.$refs.audio.currentTime = (this.progress / 100) * this.$refs.audio.duration;
     },
+    /* enables using the volume slider */
     updateVolume() {
       this.$refs.audio.volume = this.volume / 100
     },
+    /* plays the audio for n seconds */
     playForSeconds(n) {
       if(n <= this.$refs.audio.duration){ 
       this.enable = Math.max(this.enable, n + 1);
@@ -200,6 +209,7 @@ export default {
       }, (n + 1) * 1000)
     }
     },
+    /* checks Input and then shows the result */
     checkInput() {
       this.submitted = true;
       if (this.inputText.toLowerCase().replace(' ', '') !== this.currentAudio.name.toLowerCase().replace(' ', '')) {
@@ -215,6 +225,7 @@ export default {
         }
       }
     },
+    /* skips the audio and loads new audio */
     playRandomAudio() {
       let randomIndex
       do {

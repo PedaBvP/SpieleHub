@@ -4,25 +4,25 @@
     <v-row>
       <v-col cols="12" md="6">
         <v-card @click="navigateTo('Solitaire')" class="game-card">
-          <img :width="1000" src="../assets/images/solitaire.png" class="game-icon">
-          <v-card-title>Solitaire</v-card-title></img>
+          <img :width="1000" src="../assets/images/solitaire.png" class="game-icon"/>
+          <v-card-title>Solitaire</v-card-title>
         </v-card>
       </v-col>
       <v-col cols="12" md="6">
         <v-card @click="navigateTo('Memory')" class="game-card">
-          <img src="../assets/images/memory.png" :width="230">
-          <v-card-title>Memory</v-card-title></img>
+          <img src="../assets/images/memory.png" :width="230"/>
+          <v-card-title>Memory</v-card-title>
         </v-card>
       </v-col>
       <v-col cols="12" md="6">
         <v-card @click="navigateTo('GuessTheSound')" class="game-card">
-          <img src="../assets/images/guessTheSound.png" :width="240"></img>
+          <img src="../assets/images/guessTheSound.png" :width="240"/>
           <v-card-title>Guess The Sound</v-card-title>
         </v-card>
       </v-col>
       <v-col cols="12" md="6">
         <v-card @click="navigateTo('GuessTheFlag')" class="game-card">
-          <img src="../assets/images/guessTheFlag.png" :width="350"></img>
+          <img src="../assets/images/guessTheFlag.png" :width="350"/>
           <v-card-title>Guess The Flag</v-card-title>
         </v-card>
       </v-col>
