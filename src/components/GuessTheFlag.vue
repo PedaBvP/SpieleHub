@@ -1,18 +1,18 @@
 // src/components/FlagQuiz.vue
 
 <template>
-    <v-card color="grey-lighten-1" >
-        <img :src="flagUrl" alt="Country Flag" height="250" />
+    <v-container color="white">
+        <img :src="flagUrl" alt="Country Flag" height="250" class="mt-5" style="border: 1px black solid" />
         <div v-for="country in options" :key="country.id">
             <v-row justify="center">
                 <v-btn @click="checkAnswer(country)" ><v-text color="black">{{ country.name }}</v-text></v-btn>
             </v-row>
         </div>
         <div v-if="result !== null">
-            <img :src="result" height="250"/>
+            <img :src="result" height="250" style="width: 70px; height: 70px;" class="mt-4"/>
             <p v-if="last !== null">{{ last }}</p>
         </div>
-    </v-card>
+    </v-container>
 </template>
 
 <script>
